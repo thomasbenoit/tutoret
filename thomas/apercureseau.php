@@ -1,8 +1,9 @@
 <?php
 	include_once('class/Auth.php');
-	session_start();
-
-
+	session_start();	
+	if(!Auth::islog()){
+		header('Location:index.php?message=identification%20requise');
+	}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -91,8 +92,8 @@
        <?php      
         if(Auth::islog()){ 
             echo '<ul class="nav">
-                          <li class="active"><a href="index.php">Acceuil</a></li>
-                          <li><a href="apercureseau.php">Apercu du reseau</a></li>
+                          <li ><a href="index.php">Acceuil</a></li>
+                          <li class="active"><a href="apercureseau.php">Apercu du reseau</a></li>
                           <li><a href="#">Lancer un script reseau</a></li>
                           <li><a href="#">Contact administrateur</a></li>
                         </ul>';
@@ -116,21 +117,10 @@
       <div class="row-fluid">    
         <div class="span12">
           <div class="hero-unit">
-            <?php
-            if(isset($_GET['message'])&& !empty($_GET['message'])){
-              echo htmlentities($_GET['message']);
-            }
-            else{
-
-           echo "<h1>Bonjour ";
-          if(Auth::islog()) echo $_SESSION['Auth']->getPseudo(); 
-           echo " et bienvenue sur le reseau </h1>
-            <p>Cliquez sur le lien ci dessous pour acceder à la documentation du site</p>
-            <p><a href=\"#\" class=\"btn btn-primary btn-large\">Documentation</a></p>";
-          }
-          ?>
+            <h1>Apercu du reseau</h1> 
+            <p>calcule nombre de post allumer par salle lien cliquable vers une salle et son details<p>
+           <p>calcule nombre de personne connecter</p>       
           </div>
-
         </div><!--/span-->
       </div><!--/row-->
 
@@ -160,3 +150,4 @@
 
   </body>
 </html>
+?>

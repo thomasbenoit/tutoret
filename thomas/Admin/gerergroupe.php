@@ -1,5 +1,6 @@
 <?php
 	include_once('../class/Auth.php');
+  require_once('../databaseco.php');
 	session_start();
 	if( !Auth::isAdmin()){
 		header('Location:../index.php');
@@ -96,7 +97,7 @@
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
               <li class="nav-header">Administration des utilisateurs</li>
-              <li><a href="gerergroupe.php">Gerer les groupes</a></li>
+              <li class="active"><a href="gerergroupe.php">Gerer les groupes</a></li>
               <li><a href="#">Gerer les utilisateurs</a></li>
               <li><a href="#">Activation des comptes</a></li>
               <li class="nav-header">Administration de la base</li>
@@ -118,40 +119,75 @@
           </div><!--/.well -->
         </div><!--/span-->
         <div class="span9">
-          <div class="hero-unit">
-            <h1>Bonjour et bienvenue sur la page d'administration du site</h1>
-            <p>Cliquez sur le lien ci dessous pour acceder a la documentation de la zone d'administration</p>
-            <p><a href="#" class="btn btn-primary btn-large">Documentation</a></p>
-          </div>
-          <div class="row-fluid">
-            <div class="span12">
-              <h3>Histrorique des derniers script utilise</h3>
-           <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>script</th>
-                <th>Utilisateur</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                    <span class="label label-info">Ping</span>
-                </td>
-                <td>
-                  <p> thomas <p>
-                </td>
-                 <td>
-                  <p> <span class="label">21-12-2013 11h55</span> <p>
-                </td>
-              </tr>
-             
-            </tbody>
-          </table>
-          
-            </div>
-          </div><!--/row-->
+              <h3>Les groupes</h3>
+                <?php 
+                if(isset($_GET['groupe'])){
+                  $groupe=htmlentities($_GET['groupe']);
+                  $q=array(':groupe'=>$groupe);
+                  $sql='SELECT idScripts,nomScripts,descriptionScripts FROM droitscripts natural join scripts WHERE idGroupes=:groupe';
+                  $req=$cnx->prepare($sql);
+                  $req->execute($q);
+                  
+                   $res=$req->fetchAll();
+                  $count=$req->rowCount();
+                  if($count>0){
+
+                  echo "<h3>Liste des scripts autiriser par le groupe</h3>";
+                  echo '<table class="table table-bordered table-striped">
+                  <thead>
+                      <tr>
+                        <th>script</th>
+                        <th>Autorisé</th>
+  
+                      </tr>
+                    </thead>'; 
+                    foreach ($res as $key) {
+  
+                    extract($key);
+              
+              echo '
+                  
+                    <tbody>
+                      <tr>
+                        <td>
+                            <span class="label label-info">'.$nomScripts.'</span>
+                        </td>
+                         <td>
+                          <p> <span class="label label-success">Autorisé</span> <p>
+                        </td>
+                      </tr>';
+                  }
+            echo "</tbody>
+          </table>";
+                  
+
+                 }
+                 else{
+                  echo "<h3>Aucun scripts autiriser par le groupe</h3>";
+
+                 }
+                   
+                }
+                  
+                  $sql='SELECT idScripts,nomScripts FROM scripts';
+                  $req=$cnx->prepare($sql);
+                  $req->execute();
+                   $res=$req->fetchAll();
+                  $count=$req->rowCount();
+                echo "<h3 class=\"form-signin-heading\">Ajouter un script au groupe</h3>";
+   echo "<form class=\"form-inline\" action=\"ajouterscriptgroupe.php?groupe=$groupe\" method=\"POST\">";
+   
+             echo '<select>';
+          foreach ($res as $key ) {
+            extract($key);
+            echo "<option value=\"$idScripts\">$nomScripts</option>";
+          }
+          echo  ' </select>';
+              echo ' <button class="btn  btn-primary" type="submit" name="submit">Ajouter</button>
+            </form>';
+                ?>
+
+                           
         </div><!--/span-->
       </div><!--/row-->
 
