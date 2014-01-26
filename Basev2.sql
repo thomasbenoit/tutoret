@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Sam 25 Janvier 2014 à 21:02
+-- Généré le: Dim 26 Janvier 2014 à 18:13
 -- Version du serveur: 5.5.24-log
 -- Version de PHP: 5.4.3
 
@@ -298,7 +298,7 @@ CREATE TABLE IF NOT EXISTS `configsalle` (
   `idSalles` int(11) NOT NULL,
   PRIMARY KEY (`idConfigsalle`),
   KEY `fk_Configsalle_Salles1_idx` (`idSalles`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
 --
 -- Contenu de la table `configsalle`
@@ -330,6 +330,31 @@ CREATE TABLE IF NOT EXISTS `configservice` (
   KEY `fk_Configservice_Ordinateurs1_idx` (`idOrdinateurs`),
   KEY `fk_Configservice_Services1_idx` (`idServices`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `droitscripts`
+--
+
+CREATE TABLE IF NOT EXISTS `droitscripts` (
+  `idDroitscripts` int(11) NOT NULL AUTO_INCREMENT,
+  `idScripts` int(11) NOT NULL,
+  `idGroupes` int(11) NOT NULL,
+  PRIMARY KEY (`idDroitscripts`),
+  KEY `fk_Droitscripts_Scripts1_idx` (`idScripts`),
+  KEY `fk_Droitscripts_Groupes1_idx` (`idGroupes`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+
+--
+-- Contenu de la table `droitscripts`
+--
+
+INSERT INTO `droitscripts` (`idDroitscripts`, `idScripts`, `idGroupes`) VALUES
+(1, 1, 1),
+(2, 2, 1),
+(3, 1, 2),
+(4, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -591,7 +616,7 @@ CREATE TABLE IF NOT EXISTS `salles` (
   `nomSalles` varchar(45) DEFAULT NULL,
   `identificateurSalles` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idSalles`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
 --
 -- Contenu de la table `salles`
@@ -607,6 +632,27 @@ INSERT INTO `salles` (`idSalles`, `nomSalles`, `identificateurSalles`) VALUES
 (7, 'info25', 'info25'),
 (8, 'info26', 'info26'),
 (9, 'info27', 'info27');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `scripts`
+--
+
+CREATE TABLE IF NOT EXISTS `scripts` (
+  `idScripts` int(11) NOT NULL AUTO_INCREMENT,
+  `nomScripts` varchar(45) DEFAULT NULL,
+  `descriptionScripts` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`idScripts`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+
+--
+-- Contenu de la table `scripts`
+--
+
+INSERT INTO `scripts` (`idScripts`, `nomScripts`, `descriptionScripts`) VALUES
+(1, 'ping', 'affiche les pc allumer'),
+(2, 'who', 'trouve l''utilisateur des pc allumer');
 
 -- --------------------------------------------------------
 
@@ -646,7 +692,15 @@ CREATE TABLE IF NOT EXISTS `utilisateurs` (
   `idGroupes` int(11) NOT NULL,
   PRIMARY KEY (`idUtilisateurs`),
   KEY `fk_Utilisateurs_Groupes1_idx` (`idGroupes`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+
+--
+-- Contenu de la table `utilisateurs`
+--
+
+INSERT INTO `utilisateurs` (`idUtilisateurs`, `nomUtilisateurs`, `prenomUtilisateurs`, `pseudoUtilisateurs`, `mdpUtilisateurs`, `emailUtilisateurs`, `tokenUtilisateurs`, `etatUtilisateurs`, `idGroupes`) VALUES
+(3, NULL, NULL, 'thomas', 'db826e55056372d78fa4e5021e9222cd2fa4a10c', 'thomas.rangeard@etu.univ-orleans.fr', 'e4c4523337d14d8a551c07ae5c13bea5d77db3ea', 1, 1),
+(4, NULL, NULL, 'thomas2', 'db826e55056372d78fa4e5021e9222cd2fa4a10c', 'thomas45100@hotmail.fr', 'a3dc1fca70fe16efb9abe980af910961c7c216cb', 0, 3);
 
 --
 -- Contraintes pour les tables exportées
@@ -656,8 +710,8 @@ CREATE TABLE IF NOT EXISTS `utilisateurs` (
 -- Contraintes pour la table `configapplication`
 --
 ALTER TABLE `configapplication`
-  ADD CONSTRAINT `fk_Configapplication_Ordinateurs1` FOREIGN KEY (`idOrdinateurs`) REFERENCES `ordinateurs` (`idOrdinateurs`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Configapplication_Applications1` FOREIGN KEY (`idApplications`) REFERENCES `applications` (`idApplications`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_Configapplication_Applications1` FOREIGN KEY (`idApplications`) REFERENCES `applications` (`idApplications`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Configapplication_Ordinateurs1` FOREIGN KEY (`idOrdinateurs`) REFERENCES `ordinateurs` (`idOrdinateurs`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Contraintes pour la table `configpost`
@@ -677,6 +731,13 @@ ALTER TABLE `configsalle`
 ALTER TABLE `configservice`
   ADD CONSTRAINT `fk_Configservice_Ordinateurs1` FOREIGN KEY (`idOrdinateurs`) REFERENCES `ordinateurs` (`idOrdinateurs`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_Configservice_Services1` FOREIGN KEY (`idServices`) REFERENCES `services` (`idServices`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Contraintes pour la table `droitscripts`
+--
+ALTER TABLE `droitscripts`
+  ADD CONSTRAINT `fk_Droitscripts_Scripts1` FOREIGN KEY (`idScripts`) REFERENCES `scripts` (`idScripts`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Droitscripts_Groupes1` FOREIGN KEY (`idGroupes`) REFERENCES `groupes` (`idGroupes`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Contraintes pour la table `ordinateurs`
